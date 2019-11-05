@@ -1,7 +1,8 @@
 # import gym
 import box_world_env
 import time
-from PIL import Image
+# from PIL import Image
+import matplotlib.pyplot as plt
 import numpy as np
 import argparse
 import os
@@ -31,7 +32,7 @@ if save_images and not os.path.exists('images'):
         print('Error: Creating images target directory. ')
 
 ts = time.time()
-env = box_world_env.boxworld(12, 3, 2, 1)
+env = box_world_env.boxworld(12, 2, 2, 1)
 ACTION_LOOKUP = env.unwrapped.get_action_lookup()
 print("Created environment: {}".format(env_name))
 
@@ -75,8 +76,14 @@ for i_episode in range(n_rounds):
         print(ACTION_LOOKUP[action], reward, done, info)
         print(len(observation), len(observation[0]), len(observation[0][0]))
         if save_images:
-            img = Image.fromarray(np.array(env.render()), 'RGB')
-            img.save(os.path.join('images', 'observation_{}_{}.png'.format(i_episode, t)))
+            # img = Image.fromarray(env.render(mode="return"), 'RGB')
+            # img.save(os.path.join('images', 'observation_{}_{}.png'.format(i_episode, t)))
+            img = env.render(mode="return")
+            fig = plt.imshow(img, vmin=0, vmax=255, interpolation='none')
+            fig.axes.get_xaxis().set_visible(False)
+            fig.axes.get_yaxis().set_visible(False)
+            plt.savefig(os.path.join('images', 'observation_{}_{}.png'.format(i_episode, t)))
+
 
         if done:
             print("Episode finished after {} timesteps".format(t+1))

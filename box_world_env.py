@@ -123,7 +123,7 @@ class boxworld(gym.Env):
         return self.world
 
     def render(self, mode="human"):
-        img = self.world.astype(np.uint32)
+        img = self.world.astype(np.uint8)
         if mode == "return":
             return img
 
