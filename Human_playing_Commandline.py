@@ -32,7 +32,7 @@ if save_images and not os.path.exists('images'):
         print('Error: Creating images target directory. ')
 
 ts = time.time()
-env = box_world_env.boxworld(12, 2, 2, 1)
+env = box_world_env.boxworld(12, 4, 3, 1)
 ACTION_LOOKUP = env.unwrapped.get_action_lookup()
 print("Created environment: {}".format(env_name))
 
