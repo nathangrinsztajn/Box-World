@@ -2,7 +2,7 @@ import numpy as np
 import random
 
 def sampling_pairs(num_pair, n=12):
-    possibilities = set(range(n*(n-1)))
+    possibilities = set(range(1, n*(n-1)))
     keys = []
     locks = []
     for k in range(num_pair):
