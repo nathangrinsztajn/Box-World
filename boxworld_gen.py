@@ -36,9 +36,11 @@ agent_color = [128, 128, 128]
 goal_color = [255, 255, 255]
 grid_color = [220, 220, 220]
 
-def world_gen(n=12, goal_length=3, num_distractor=2, distractor_length=2):
+def world_gen(n=12, goal_length=3, num_distractor=2, distractor_length=2, seed=None):
     """generate boxworld
     """
+    if seed is not None:
+        random.seed(seed)
 
     world_dic = {}
     world = np.ones((n, n, 3)) * 220

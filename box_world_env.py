@@ -40,10 +40,11 @@ class boxworld(gym.Env):
         # Game initialization
         self.owned_key = [220, 220, 220]
 
+        self.np_random_seed = None
         self.reset(world)
 
     def seed(self, seed=None):
-        self.np_random, seed = seeding.np_random(seed)
+        self.np_random_seed = seed
         return [seed]
 
     def save(self):
@@ -112,7 +113,8 @@ class boxworld(gym.Env):
         if world is None:
            self.world, self.player_position = world_gen(n=self.n, goal_length=self.goal_length,
                                                          num_distractor=self.num_distractor,
-                                                         distractor_length=self.distractor_length)
+                                                         distractor_length=self.distractor_length,
+                                                        seed=self.np_random_seed)
         else:
             self.world, self.player_position = world
 
@@ -120,11 +122,19 @@ class boxworld(gym.Env):
 
         return self.world
 
-    def render(self):
+    def render(self, mode="human"):
         img = self.world.astype(np.uint32)
-        plt.imshow(img, vmin=0, vmax=255, interpolation='none')
-        plt.show()
+        if mode == "return":
+            return img
 
+        else:
+            # from gym.envs.classic_control import rendering
+            # if self.viewer is None:
+            #     self.viewer = rendering.SimpleImageViewer()
+            # self.viewer.imshow(img)
+            # return self.viewer.isopen
+            plt.imshow(img, vmin=0, vmax=255, interpolation='none')
+            plt.show()
 
     def get_action_lookup(self):
         return ACTION_LOOKUP
@@ -147,4 +157,6 @@ CHANGE_COORDINATES = {
 if __name__ == "__main__":
     # execute only if run as a script
     env = boxworld(12, 3, 2, 1)
+    # env.seed(1)
+    env.reset()
     env.render()
