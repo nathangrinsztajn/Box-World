@@ -20,7 +20,7 @@ To collect the content of a box the agent must first collect the key that opens 
 
 Three user-controlled parameters contribute to the difficulty of the level:
 l. The number of boxes in the path to the goal (solution length)
-l. The number of distractor branches 
-l. The length of the distractor branches.
+2. The number of distractor branches 
+3. The length of the distractor branches.
 
 In general, the task is computationally difficult for a few reasons. First, a key can only be used once, so the agent must be able to reason about whether a particular box is along a distractor branch or the solution path. Second, keys and boxes appear in random locations in the room, emphasizing a capacity to reason about keys and boxes based on their abstract relations, rather than based on their spatial positions
