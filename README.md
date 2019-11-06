@@ -12,7 +12,6 @@ It is a perceptually simple but combinatorially complex environment that require
     <img src="/examples/box_world.png?raw=true">
   </p>
   <p align="center" id="topologyMask">
-           Box-World grid
   </p>
 </div>
 
