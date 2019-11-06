@@ -1,5 +1,5 @@
 # Box-World
-Implementation of the Box-World environment from the paper "Relational Deep Reinforcement Learning" (https://arxiv.org/pdf/1806.01830.pdf), which is made to explicitly target relational reasoning.
+Gym implementation of the Box-World environment from the paper "Relational Deep Reinforcement Learning" (https://arxiv.org/pdf/1806.01830.pdf), which is made to explicitly target relational reasoning.
 
 | Example Game 1 | Example Game 2 | Example Game 3 |
 | :---: | :---: | :---: 
