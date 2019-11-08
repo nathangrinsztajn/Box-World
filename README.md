@@ -1,4 +1,7 @@
 # Box-World
+
+## Introduction
+
 Gym implementation of the Box-World environment from the paper "Relational Deep Reinforcement Learning" (https://arxiv.org/pdf/1806.01830.pdf), which is made to explicitly target relational reasoning.
 
 | Example Game 1 | Example Game 2 | Example Game 3 |
@@ -23,3 +26,20 @@ Three user-controlled parameters contribute to the difficulty of the level:
  - The length of the distractor branches
 
 In general, the task is computationally difficult for a few reasons. First, a key can only be used once, so the agent must be able to reason about whether a particular box is along a distractor branch or the solution path. Second, keys and boxes appear in random locations in the room, emphasizing a capacity to reason about keys and boxes based on their abstract relations, rather than based on their spatial positions.
+
+## Actions
+The game provides 4 actions to interact with the environment. 
+The mapping of the action numbers to the actual actions looks as follows
+
+ | Action       | ID    | 
+ | --------     | :---: | 
+ | Push Up      | 0     |  
+ | Push Down    | 1     | 
+ | Push Left    | 2     |   
+ | Push Right   | 3     |
+ 
+ ## Quick Game
+ 
+ ```bash
+ python Human_playing_Commandline.py --gifs
+```
