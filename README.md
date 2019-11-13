@@ -33,10 +33,10 @@ The mapping of the action numbers to the actual actions looks as follows
 
  | Action       | ID    | 
  | --------     | :---: | 
- | Push Up      | 0     |  
- | Push Down    | 1     | 
- | Push Left    | 2     |   
- | Push Right   | 3     |
+ | Move Up      | 0     |  
+ | Move Down    | 1     | 
+ | Move Left    | 2     |   
+ | Move Right   | 3     |
  
  ## Quick Game
  
