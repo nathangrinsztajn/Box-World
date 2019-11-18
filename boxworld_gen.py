@@ -89,8 +89,3 @@ def update_color(world, previous_agent_loc, new_agent_loc):
 
 def is_empty(room):
     return np.array_equal(room, grid_color) or np.array_equal(room, agent_color)
-
-# todo add first line with key currently held
-# todo add boundaries
-
-
