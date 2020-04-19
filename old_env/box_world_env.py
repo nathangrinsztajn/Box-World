@@ -1,13 +1,14 @@
 import gym
+from gym.utils import seeding
 from gym.spaces.discrete import Discrete
 from gym.spaces import Box
 
+import numpy as np
 import matplotlib.pyplot as plt
-from collections import deque
 
 from boxworld_gen import *
 
-class BoxWorld(gym.Env):
+class boxworld(gym.Env):
     """Boxworld representation
     Args:
       n: specify the size of the field (n x n)
@@ -18,7 +19,7 @@ class BoxWorld(gym.Env):
              If None, generate a new data by calling world_gen() function
     """
 
-    def __init__(self, n, goal_length, num_distractor, distractor_length, max_steps=10**6, world=None):
+    def __init__(self, n, goal_length, num_distractor, distractor_length, max_steps=300, world=None):
         self.goal_length = goal_length
         self.num_distractor = num_distractor
         self.distractor_length = distractor_length
@@ -26,27 +27,21 @@ class BoxWorld(gym.Env):
         self.num_pairs = goal_length - 1 + distractor_length * num_distractor
 
         # Penalties and Rewards
-        self.step_cost = 0
+        self.step_cost = 0.1
         self.reward_gem = 10
-        self.reward_key = 1
-        self.reward_distractor = -1
+        self.reward_key = 0
 
         # Other Settings
         self.viewer = None
         self.max_steps = max_steps
         self.action_space = Discrete(len(ACTION_LOOKUP))
-        self.observation_space = Box(low=0, high=255, shape=(n+2, n+2, 3), dtype=np.uint8)
+        self.observation_space = Box(low=0, high=255, shape=(n, n, 3), dtype=np.uint8)
 
         # Game initialization
         self.owned_key = [220, 220, 220]
 
         self.np_random_seed = None
         self.reset(world)
-
-        self.num_env_steps = 0
-        self.episode_reward = 0
-
-        self.last_frames = deque(maxlen=3)
 
     def seed(self, seed=None):
         self.np_random_seed = seed
@@ -65,20 +60,22 @@ class BoxWorld(gym.Env):
 
         reward = -self.step_cost
         done = self.num_env_steps == self.max_steps
-        solved = False
 
         # Move player if the field in the moving direction is either
 
-        if np.any(new_position < 1) or np.any(new_position >= self.n + 1):
+        if np.any(new_position < 0) or np.any(new_position >= self.n):
+            possible_move = False
+
+        elif np.array_equal(new_position, [0, 0]):
             possible_move = False
 
         elif is_empty(self.world[new_position[0], new_position[1]]):
             # No key, no lock
             possible_move = True
 
-        elif new_position[1] == 1 or is_empty(self.world[new_position[0], new_position[1] - 1]):
+        elif new_position[1] == 0 or is_empty(self.world[new_position[0], new_position[1]-1]):
             # It is a key
-            if is_empty(self.world[new_position[0], new_position[1] + 1]):
+            if is_empty(self.world[new_position[0], new_position[1]+1]):
                 # Key is not locked
                 possible_move = True
                 self.owned_key = self.world[new_position[0], new_position[1]].copy()
@@ -86,7 +83,6 @@ class BoxWorld(gym.Env):
                 if np.array_equal(self.world[new_position[0], new_position[1]], goal_color):
                     # Goal reached
                     reward += self.reward_gem
-                    solved = True
                     done = True
                 else:
                     reward += self.reward_key
@@ -97,68 +93,38 @@ class BoxWorld(gym.Env):
             if np.array_equal(self.world[new_position[0], new_position[1]], self.owned_key):
                 # The lock matches the key
                 possible_move = True
-
-                # goal reached
-                if np.array_equal(self.world[new_position[0], new_position[1]-1], goal_color):
-                    # Goal reached
-                    self.world[new_position[0], new_position[1] - 1] = [220, 220, 220]
-                    self.world[0, 0] = wall_color
-                    reward += self.reward_gem
-                    solved = True
-                    done = True
-
-                else:
-                    # loose old key and collect new one
-                    self.owned_key = np.copy(self.world[new_position[0], new_position[1] - 1])
-                    self.world[new_position[0], new_position[1] - 1] = [220, 220, 220]
-                    self.world[0, 0] = self.owned_key
-                    if self.world_dic[tuple(new_position)] == 0:
-                        reward += self.reward_distractor
-                        done = True
-                    else:
-                        reward += self.reward_key
             else:
                 possible_move = False
-                # print("lock color is {}, but owned key is {}".format(
-                #     self.world[new_position[0], new_position[1]], self.owned_key))
+                print("lock color is {}, but owned key is {}".format(
+                    self.world[new_position[0], new_position[1]], self.owned_key))
 
         if possible_move:
             self.player_position = new_position
             update_color(self.world, previous_agent_loc=current_position, new_agent_loc=new_position)
 
-        self.episode_reward += reward
-
         info = {
             "action.name": ACTION_LOOKUP[action],
             "action.moved_player": possible_move,
-            "bad_transition": self.max_steps == self.num_env_steps,
         }
-        if done:
-            info["episode"] = {"r": self.episode_reward,
-                               "length": self.num_env_steps,
-                               "solved": solved}
-        self.last_frames.append(self.world)
 
-        return (self.world - grid_color[0])/255 * 2, reward, done, info
+        return self.world, reward, done, info
 
     def reset(self, world=None):
         if world is None:
-            self.world, self.player_position, self.world_dic = world_gen(n=self.n, goal_length=self.goal_length,
+           self.world, self.player_position = world_gen(n=self.n, goal_length=self.goal_length,
                                                          num_distractor=self.num_distractor,
                                                          distractor_length=self.distractor_length,
-                                                     seed=self.np_random_seed)
+                                                        seed=self.np_random_seed)
         else:
-            self.world, self.player_position, self.world_dic = world
+            self.world, self.player_position = world
 
         self.num_env_steps = 0
-        self.episode_reward = 0
-        self.owned_key = [220, 220, 220]
 
-        return (self.world - grid_color[0])/255 * 2
+        return self.world
 
     def render(self, mode="human"):
         img = self.world.astype(np.uint8)
-        if mode == "rgb_array":
+        if mode == "return":
             return img
 
         else:
@@ -187,22 +153,10 @@ CHANGE_COORDINATES = {
     3: (0, 1)
 }
 
+
 if __name__ == "__main__":
-    # import pickle
-
     # execute only if run as a script
-    env = BoxWorld(6, 2, 1, 1)
-    env.seed(10)
-
-    # with open('/home/nathan/PycharmProjects/relational_RL_graphs/images/ex_world.pkl', 'rb') as file:
-
+    env = boxworld(12, 3, 2, 1)
+    # env.seed(1)
     env.reset()
     env.render()
-
-    env.reset()
-    env.render()
-    # with open('/home/nathan/PycharmProjects/relational_RL_graphs/images/ex_world.pkl', 'wb') as file:
-    #     pickle.dump([env.world, env.player_position, env.world_dic], file)
-
-
-# TO DO : impossible lvls ? (keys stacked right made inaccessible)

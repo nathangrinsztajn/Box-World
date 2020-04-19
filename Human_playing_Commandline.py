@@ -3,7 +3,6 @@ import box_world_env
 import time
 # from PIL import Image
 import matplotlib.pyplot as plt
-import numpy as np
 import argparse
 import os
 
@@ -32,7 +31,10 @@ if save_images and not os.path.exists('images'):
         print('Error: Creating images target directory. ')
 
 ts = time.time()
-env = box_world_env.boxworld(12, 4, 3, 1)
+
+env = box_world_env.BoxWorld(12, 4, 2, 2)
+# env = box_world_env.BoxWorld(6, 2, 1, 1)
+
 ACTION_LOOKUP = env.unwrapped.get_action_lookup()
 print("Created environment: {}".format(env_name))
 
@@ -78,7 +80,7 @@ for i_episode in range(n_rounds):
         if save_images:
             # img = Image.fromarray(env.render(mode="return"), 'RGB')
             # img.save(os.path.join('images', 'observation_{}_{}.png'.format(i_episode, t)))
-            img = env.render(mode="return")
+            img = env.render(mode="rgb_array")
             fig = plt.imshow(img, vmin=0, vmax=255, interpolation='none')
             fig.axes.get_xaxis().set_visible(False)
             fig.axes.get_yaxis().set_visible(False)
@@ -94,7 +96,7 @@ for i_episode in range(n_rounds):
         print('')
         import imageio
 
-        with imageio.get_writer(os.path.join('images', 'round_{}.gif'.format(i_episode)), mode='I', fps=1) as writer:
+        with imageio.get_writer(os.path.join('images', 'round_{}.gif'.format(i_episode)), mode='I', fps=2) as writer:
 
                 for t in range(n_steps):
                     try:
@@ -108,3 +110,4 @@ for i_episode in range(n_rounds):
 
 env.close()
 time.sleep(10)
+

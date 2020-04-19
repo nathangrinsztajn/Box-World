@@ -6,7 +6,7 @@ Gym implementation of the Box-World environment from the paper "Relational Deep 
 
 | Example Game 1 | Example Game 2 | Example Game 3 |
 | :---: | :---: | :---: 
-| ![Game 1](/examples/round_1.gif?raw=true) | ![Game 2](/examples/round_2.gif?raw=true) | ![Game 3](/examples/round_0.gif?raw=true) |
+| ![Game 1](/examples/round_easy.gif?raw=true) | ![Game 2](/examples/round_medium.gif?raw=true) | ![Game 3](/examples/round_hard.gif?raw=true) |
 
 It is a perceptually simple but combinatorially complex environment that requires abstract relational reasoning and planning. It consists of a n × n pixel room with keys and boxes randomly scattered. The room also contains an agent, represented by a single dark gray pixel, which can move in four directions: up, down, left, right. Keys are represented by a single colored pixel. The agent can pick up a loose key (i.e., one not adjacent to any other colored pixel) by walking over it. Boxes are represented by two adjacent colored pixels – the pixel on the right represents the box’s lock and its color indicates which key can be used to open that lock; the pixel on the left indicates the content of the box which is inaccessible while the box is locked.
 
