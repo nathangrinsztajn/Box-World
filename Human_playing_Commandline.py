@@ -32,8 +32,8 @@ if save_images and not os.path.exists('images'):
 
 ts = time.time()
 
-env = box_world_env.BoxWorld(12, 4, 2, 2)
-# env = box_world_env.BoxWorld(6, 2, 1, 1)
+# env = box_world_env.BoxWorld(12, 4, 2, 2)
+env = box_world_env.BoxWorld(6, 2, 1, 1, collect_key=False)
 
 ACTION_LOOKUP = env.unwrapped.get_action_lookup()
 print("Created environment: {}".format(env_name))
@@ -52,7 +52,7 @@ def print_available_actions():
     display_actions = '\n'.join(available_actions_list)
     print()
     print('Action out of Range!')
-    print('Available Actions:\n{}'.format(display_actions))
+    print('Available Actions:\n{}'.format(display_a1ctions))
     print()
 
 

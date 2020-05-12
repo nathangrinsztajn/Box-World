@@ -18,12 +18,13 @@ class BoxWorld(gym.Env):
              If None, generate a new data by calling world_gen() function
     """
 
-    def __init__(self, n, goal_length, num_distractor, distractor_length, max_steps=10**6, world=None):
+    def __init__(self, n, goal_length, num_distractor, distractor_length, max_steps=10**6, collect_key=True, world=None):
         self.goal_length = goal_length
         self.num_distractor = num_distractor
         self.distractor_length = distractor_length
         self.n = n
         self.num_pairs = goal_length - 1 + distractor_length * num_distractor
+        self.collect_key = collect_key  # if True, keys are collected immediately when available
 
         # Penalties and Rewards
         self.step_cost = 0
@@ -85,9 +86,11 @@ class BoxWorld(gym.Env):
                 self.world[0, 0] = self.owned_key
                 if np.array_equal(self.world[new_position[0], new_position[1]], goal_color):
                     # Goal reached
+                    self.world[0, 0] = wall_color
                     reward += self.reward_gem
                     solved = True
                     done = True
+
                 else:
                     reward += self.reward_key
             else:
@@ -98,25 +101,32 @@ class BoxWorld(gym.Env):
                 # The lock matches the key
                 possible_move = True
 
-                # goal reached
-                if np.array_equal(self.world[new_position[0], new_position[1]-1], goal_color):
-                    # Goal reached
-                    self.world[new_position[0], new_position[1] - 1] = [220, 220, 220]
-                    self.world[0, 0] = wall_color
-                    reward += self.reward_gem
-                    solved = True
-                    done = True
+                if self.collect_key:
+                    # goal reached
+                    if np.array_equal(self.world[new_position[0], new_position[1]-1], goal_color):
+                        # Goal reached
+                        self.world[new_position[0], new_position[1] - 1] = [220, 220, 220]
+                        self.world[0, 0] = wall_color
+                        reward += self.reward_gem
+                        solved = True
+                        done = True
 
+                    else:
+                        # loose old key and collect new one
+                        self.owned_key = np.copy(self.world[new_position[0], new_position[1] - 1])
+                        self.world[new_position[0], new_position[1] - 1] = [220, 220, 220]
+                        self.world[0, 0] = self.owned_key
+                        if self.world_dic[tuple(new_position)] == 0:
+                            reward += self.reward_distractor
+                            done = True
+                        else:
+                            reward += self.reward_key
                 else:
-                    # loose old key and collect new one
-                    self.owned_key = np.copy(self.world[new_position[0], new_position[1] - 1])
-                    self.world[new_position[0], new_position[1] - 1] = [220, 220, 220]
-                    self.world[0, 0] = self.owned_key
+                    self.owned_key = [220, 220, 220]
+                    self.world[0, 0] = [0, 0, 0]
                     if self.world_dic[tuple(new_position)] == 0:
                         reward += self.reward_distractor
                         done = True
-                    else:
-                        reward += self.reward_key
             else:
                 possible_move = False
                 # print("lock color is {}, but owned key is {}".format(
