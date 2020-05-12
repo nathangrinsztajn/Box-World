@@ -47,7 +47,7 @@ The mapping of the action numbers to the actual actions looks as follows
  | num_distractor    | Number of distractors    |   
  | distractor_length   | Number of distractor keys in each distractor path    |
  | max_steps   | Maximum number of steps in a trajectory   |
- | collect_key   | If true, a key is collected immediatly when its corresponding lock is opened |
+ | collect_key   | If true, a key is collected immediately when its corresponding lock is opened |
  
  
 ### Rendering Modes

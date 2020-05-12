@@ -10,12 +10,13 @@ from boxworld_gen import *
 class BoxWorld(gym.Env):
     """Boxworld representation
     Args:
-      n: specify the size of the field (n x n)
-      goal_length
-      num_distractor
-      distractor_length
-      world: an existing world data. If this is given, use this data.
-             If None, generate a new data by calling world_gen() function
+      n (int): Size of the field (n x n)
+      goal_length (int): Number of keys to collect to solve the level
+      num_distractor (int): Number of distractor trajectories
+      distractor_length (int): Number of distractor keys in each distractor trajectory
+      max_steps (int): Maximum number of env step for a given level
+      collect_key (bool): If true, a key is collected immediately when its corresponding lock is opened
+      world: an existing level. If None, generates a new level by calling the world_gen() function
     """
 
     def __init__(self, n, goal_length, num_distractor, distractor_length, max_steps=10**6, collect_key=True, world=None):
