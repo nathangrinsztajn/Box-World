@@ -38,6 +38,24 @@ The mapping of the action numbers to the actual actions looks as follows
  | Move Left    | 2     |   
  | Move Right   | 3     |
  
+## Environment Configuration
+### Environment Parameters
+ | Parameter  |   Description  | 
+ | --------     | :---: | 
+ | n      | Grid size     |  
+ | goal_length    | Number of keys to collect to solve the level| 
+ | num_distractor    | Number of distractors    |   
+ | distractor_length   | Number of distractor keys in each distractor path    |
+ | max_steps   | Maximum number of steps in a trajectory   |
+ | collect_key   | If true, a key is collected immediatly when its corresponding lock is opened |
+ 
+ 
+### Rendering Modes
+| Mode | Description |
+| ---  | --- 
+| rgb_array | Returns the world image as a numpy array 
+| human | Displays the current state on screen
+
  ## Quick Game
  
  ```bash
