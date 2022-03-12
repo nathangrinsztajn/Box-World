@@ -2,4 +2,4 @@ imageio==2.6.1
 matplotlib==3.1.1
 numpy==1.17.2
 gym==0.15.3
-Pillow==6.2.1
+Pillow==9.0.1
